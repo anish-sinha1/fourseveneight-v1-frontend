@@ -3,15 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { User } from "../models/User";
 import { formElementHandler } from "../util/handlerFactory";
 import classes from "./RegistrationForm.module.css";
-import {
-  Row,
-  Col,
-  Container,
-  Button,
-  Alert,
-  Form,
-  Card,
-} from "react-bootstrap";
+import { Row, Col, Button, Form, Card } from "react-bootstrap";
 
 const RegistrationForm: React.FC = (props) => {
   const [firstName, setFirstName] = useState("");
@@ -25,6 +17,38 @@ const RegistrationForm: React.FC = (props) => {
   const emailHandler = formElementHandler(setEmail);
   const passwordHandler = formElementHandler(setPassword);
   const passwordConfirmHandler = formElementHandler(setPasswordConfirm);
+
+  const isValidEmail = (email: string) => {
+    const emailRegex =
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    return emailRegex.test(email);
+  };
+
+  const registrationHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!firstName || !lastName || !email || !password || !passwordConfirm) {
+      return;
+    }
+    if (!isValidEmail(email)) {
+      return;
+    }
+    if (password !== passwordConfirm) {
+      return;
+    }
+
+    const newUser: User = {
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordConfirm,
+    };
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setPasswordConfirm("");
+  };
 
   return (
     <Card className={`${classes["card"]} `}>
@@ -91,12 +115,17 @@ const RegistrationForm: React.FC = (props) => {
           </Form.Group>
         </Row>
       </Form>
-      <Button variant="outline-dark" className={`${classes["button"]}`}>
+      <Button
+        variant="outline-dark"
+        className={`${classes["button"]}`}
+        type="submit"
+        onSubmit={registrationHandler}
+      >
         Submit
       </Button>
       <div className={`${classes["login-message"]}`}>
         <p>
-          Already have an account? <a href="#">Login</a>
+          Already have an account? <a href="/">Login</a>
         </p>
       </div>
     </Card>
