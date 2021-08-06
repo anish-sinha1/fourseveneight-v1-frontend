@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { formElementHandler } from "../util/handlerFactory";
+import AlertMessage from "../UI/Alert/AlertMessage";
 import classes from "./RegistrationForm.module.css";
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
 
 const RegistrationForm: React.FC = (props) => {
+  let errors: string[] = [];
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [show, setShow] = useState(true);
+  const [error, setError] = useState(errors);
 
   const firstNameHandler = formElementHandler(setFirstName);
   const lastNameHandler = formElementHandler(setLastName);
@@ -19,6 +23,11 @@ const RegistrationForm: React.FC = (props) => {
   const usernameHandler = formElementHandler(setUsername);
   const passwordHandler = formElementHandler(setPassword);
   const passwordConfirmHandler = formElementHandler(setPasswordConfirm);
+
+  const alertMessageHandler = () => {
+    setError([]);
+    setShow(false);
+  };
 
   const isValidEmail = (email: string) => {
     const emailRegex =
@@ -29,14 +38,21 @@ const RegistrationForm: React.FC = (props) => {
   const registrationHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
     if (!firstName || !lastName || !email || !password || !passwordConfirm) {
-      return;
+      setError((currentState) => {
+        return [...currentState, "Please fill out all fields! "];
+      });
     }
     if (!isValidEmail(email)) {
-      return;
+      setError((currentState) => {
+        return [...currentState, "Invalid email! "];
+      });
     }
     if (password !== passwordConfirm) {
-      return;
+      setError((currentState) => {
+        return [...currentState, "Password fields do not match! "];
+      });
     }
+    console.log(error, errors);
 
     const newUser: object = {
       firstName,
@@ -65,6 +81,16 @@ const RegistrationForm: React.FC = (props) => {
 
   return (
     <Card className={`${classes["card"]} `}>
+      {error.length > 0 && (
+        <div>
+          <AlertMessage
+            alertMessageType="warning"
+            onClose={() => setShow(false)}
+          >
+            Errors: {error}
+          </AlertMessage>
+        </div>
+      )}
       <div className={`${classes["form-heading"]}`}>
         <h3>Register</h3>
       </div>
@@ -72,7 +98,7 @@ const RegistrationForm: React.FC = (props) => {
         <Row>
           <Col>
             <Form.Group controlId="firstName">
-              <Form.Label>First name</Form.Label>
+              <Form.Label>First name*</Form.Label>
               <Form.Control
                 onChange={firstNameHandler}
                 type="text"
@@ -83,7 +109,7 @@ const RegistrationForm: React.FC = (props) => {
           </Col>
           <Col>
             <Form.Group controlId="lastName">
-              <Form.Label>Last name</Form.Label>
+              <Form.Label>Last name*</Form.Label>
               <Form.Control
                 onChange={lastNameHandler}
                 type="text"
@@ -95,7 +121,7 @@ const RegistrationForm: React.FC = (props) => {
         </Row>
         <Row>
           <Form.Group controlId="email">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email*</Form.Label>
             <Form.Control
               onChange={emailHandler}
               type="email"
@@ -106,7 +132,7 @@ const RegistrationForm: React.FC = (props) => {
         </Row>
         <Row>
           <Form.Group controlId="username">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Username*</Form.Label>
             <Form.Control
               onChange={usernameHandler}
               type="text"
@@ -117,7 +143,7 @@ const RegistrationForm: React.FC = (props) => {
         </Row>
         <Row>
           <Form.Group controlId="password">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Password*</Form.Label>
             <Form.Control
               onChange={passwordHandler}
               type="password"
@@ -128,7 +154,7 @@ const RegistrationForm: React.FC = (props) => {
         </Row>
         <Row>
           <Form.Group controlId="confirm-password">
-            <Form.Label>Confirm password</Form.Label>
+            <Form.Label>Confirm password*</Form.Label>
             <Form.Control
               onChange={passwordConfirmHandler}
               type="password"
