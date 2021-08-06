@@ -7,8 +7,7 @@ import classes from "./RegistrationForm.module.css";
 import { Row, Col, Button, Form, Card, Alert } from "react-bootstrap";
 
 const RegistrationForm: React.FC = (props) => {
-  let errors: string[] = [];
-
+  const errors: string[] = [];
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
