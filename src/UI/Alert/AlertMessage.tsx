@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Alert } from "react-bootstrap";
 
 const AlertMessage: React.FC<{

@@ -5,14 +5,13 @@ import { formElementHandler } from "../util/handlerFactory";
 import AlertMessage from "../UI/Alert/AlertMessage";
 import classes from "./RegistrationForm.module.css";
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
-import { isDefaultClause } from "typescript";
 
 const RegistrationForm: React.FC = (props) => {
   let errors: string[] = [];
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
