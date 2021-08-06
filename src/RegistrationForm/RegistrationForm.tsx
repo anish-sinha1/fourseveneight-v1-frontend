@@ -28,14 +28,6 @@ const RegistrationForm: React.FC = (props) => {
 
   const registrationHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    console.log(
-      firstName,
-      lastName,
-      email,
-      username,
-      password,
-      passwordConfirm
-    );
     if (!firstName || !lastName || !email || !password || !passwordConfirm) {
       return;
     }
@@ -55,9 +47,6 @@ const RegistrationForm: React.FC = (props) => {
       passwordConfirm,
     };
 
-    console.log(newUser);
-    console.log({ ...newUser });
-
     axios
       .post(`http://localhost:8000/api/v1/users/register`, newUser)
       .then((res) => {
@@ -66,6 +55,12 @@ const RegistrationForm: React.FC = (props) => {
       .catch((err) => {
         console.log(err);
       });
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setUsername("");
+    setPassword("");
+    setPasswordConfirm("");
   };
 
   return (
@@ -82,6 +77,7 @@ const RegistrationForm: React.FC = (props) => {
                 onChange={firstNameHandler}
                 type="text"
                 placeholder="your first name"
+                value={firstName}
               />
             </Form.Group>
           </Col>
@@ -92,6 +88,7 @@ const RegistrationForm: React.FC = (props) => {
                 onChange={lastNameHandler}
                 type="text"
                 placeholder="your last name"
+                value={lastName}
               />
             </Form.Group>
           </Col>
@@ -103,6 +100,7 @@ const RegistrationForm: React.FC = (props) => {
               onChange={emailHandler}
               type="email"
               placeholder="name@example.com"
+              value={email}
             />
           </Form.Group>
         </Row>
@@ -113,6 +111,7 @@ const RegistrationForm: React.FC = (props) => {
               onChange={usernameHandler}
               type="text"
               placeholder="your unique username"
+              value={username}
             />
           </Form.Group>
         </Row>
@@ -123,6 +122,7 @@ const RegistrationForm: React.FC = (props) => {
               onChange={passwordHandler}
               type="password"
               placeholder="password"
+              value={password}
             />
           </Form.Group>
         </Row>
@@ -133,6 +133,7 @@ const RegistrationForm: React.FC = (props) => {
               onChange={passwordConfirmHandler}
               type="password"
               placeholder="confirm password"
+              value={passwordConfirm}
             />
           </Form.Group>
         </Row>
