@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { User } from "../models/User";
+import axios from "axios";
 import { formElementHandler } from "../util/handlerFactory";
 import classes from "./RegistrationForm.module.css";
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
@@ -9,12 +9,14 @@ const RegistrationForm: React.FC = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   const firstNameHandler = formElementHandler(setFirstName);
   const lastNameHandler = formElementHandler(setLastName);
   const emailHandler = formElementHandler(setEmail);
+  const usernameHandler = formElementHandler(setUsername);
   const passwordHandler = formElementHandler(setPassword);
   const passwordConfirmHandler = formElementHandler(setPasswordConfirm);
 
@@ -24,8 +26,16 @@ const RegistrationForm: React.FC = (props) => {
     return emailRegex.test(email);
   };
 
-  const registrationHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const registrationHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
+    console.log(
+      firstName,
+      lastName,
+      email,
+      username,
+      password,
+      passwordConfirm
+    );
     if (!firstName || !lastName || !email || !password || !passwordConfirm) {
       return;
     }
@@ -36,18 +46,26 @@ const RegistrationForm: React.FC = (props) => {
       return;
     }
 
-    const newUser: User = {
+    const newUser: object = {
       firstName,
       lastName,
       email,
+      username,
       password,
       passwordConfirm,
     };
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setPasswordConfirm("");
+
+    console.log(newUser);
+    console.log({ ...newUser });
+
+    axios
+      .post(`http://localhost:8000/api/v1/users/register`, newUser)
+      .then((res) => {
+        console.log("successful post request to api");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -92,7 +110,7 @@ const RegistrationForm: React.FC = (props) => {
           <Form.Group controlId="username">
             <Form.Label>Username</Form.Label>
             <Form.Control
-              onChange={passwordHandler}
+              onChange={usernameHandler}
               type="text"
               placeholder="your unique username"
             />
@@ -102,7 +120,7 @@ const RegistrationForm: React.FC = (props) => {
           <Form.Group controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
-              onChange={passwordConfirmHandler}
+              onChange={passwordHandler}
               type="password"
               placeholder="password"
             />
@@ -111,7 +129,11 @@ const RegistrationForm: React.FC = (props) => {
         <Row>
           <Form.Group controlId="confirm-password">
             <Form.Label>Confirm password</Form.Label>
-            <Form.Control type="password" placeholder="confirm password" />
+            <Form.Control
+              onChange={passwordConfirmHandler}
+              type="password"
+              placeholder="confirm password"
+            />
           </Form.Group>
         </Row>
       </Form>
@@ -119,7 +141,7 @@ const RegistrationForm: React.FC = (props) => {
         variant="outline-dark"
         className={`${classes["button"]}`}
         type="submit"
-        onSubmit={registrationHandler}
+        onClick={registrationHandler}
       >
         Submit
       </Button>
