@@ -1,11 +1,12 @@
+import React, { useState } from "react";
 import { Alert } from "react-bootstrap";
 
 const AlertMessage: React.FC<{
   alertMessageType: string;
-  onClose: (event: any) => void;
+  onClose: () => void;
 }> = (props) => {
   return (
-    <Alert variant={props.alertMessageType} dismissible>
+    <Alert variant={props.alertMessageType} dismissible onClose={props.onClose}>
       {props.children}
     </Alert>
   );

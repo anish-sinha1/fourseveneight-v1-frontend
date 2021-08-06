@@ -5,17 +5,19 @@ import { formElementHandler } from "../util/handlerFactory";
 import AlertMessage from "../UI/Alert/AlertMessage";
 import classes from "./RegistrationForm.module.css";
 import { Row, Col, Button, Form, Card } from "react-bootstrap";
+import { isDefaultClause } from "typescript";
 
 const RegistrationForm: React.FC = (props) => {
   let errors: string[] = [];
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [show, setShow] = useState(true);
   const [error, setError] = useState(errors);
+  const [show, setShow] = useState(false);
 
   const firstNameHandler = formElementHandler(setFirstName);
   const lastNameHandler = formElementHandler(setLastName);
@@ -25,8 +27,7 @@ const RegistrationForm: React.FC = (props) => {
   const passwordConfirmHandler = formElementHandler(setPasswordConfirm);
 
   const alertMessageHandler = () => {
-    setError([]);
-    setShow(false);
+    setShow(!show);
   };
 
   const isValidEmail = (email: string) => {
@@ -52,7 +53,13 @@ const RegistrationForm: React.FC = (props) => {
         return [...currentState, "Password fields do not match! "];
       });
     }
-    console.log(error, errors);
+
+    console.log(error);
+    console.log(error.length);
+
+    if (error.length > 0) {
+      setShow(true);
+    }
 
     const newUser: object = {
       firstName,
@@ -81,11 +88,11 @@ const RegistrationForm: React.FC = (props) => {
 
   return (
     <Card className={`${classes["card"]} `}>
-      {error.length > 0 && (
+      {show && (
         <div>
           <AlertMessage
             alertMessageType="warning"
-            onClose={() => setShow(false)}
+            onClose={alertMessageHandler}
           >
             Errors: {error}
           </AlertMessage>
