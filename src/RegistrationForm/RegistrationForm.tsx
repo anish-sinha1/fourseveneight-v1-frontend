@@ -4,7 +4,7 @@ import axios from "axios";
 import { formElementHandler } from "../util/handlerFactory";
 import AlertMessage from "../UI/Alert/AlertMessage";
 import classes from "./RegistrationForm.module.css";
-import { Row, Col, Button, Form, Card } from "react-bootstrap";
+import { Row, Col, Button, Form, Card, Alert } from "react-bootstrap";
 
 const RegistrationForm: React.FC = (props) => {
   let errors: string[] = [];
@@ -16,7 +16,8 @@ const RegistrationForm: React.FC = (props) => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState(errors);
-  const [show, setShow] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const firstNameHandler = formElementHandler(setFirstName);
   const lastNameHandler = formElementHandler(setLastName);
@@ -26,7 +27,7 @@ const RegistrationForm: React.FC = (props) => {
   const passwordConfirmHandler = formElementHandler(setPasswordConfirm);
 
   const alertMessageHandler = () => {
-    setShow(!show);
+    setShowError(!showError);
   };
 
   const isValidEmail = (email: string) => {
@@ -50,7 +51,7 @@ const RegistrationForm: React.FC = (props) => {
     setError(errors);
 
     if (error.length > 0) {
-      setShow(true);
+      setShowError(true);
     }
 
     const newUser: object = {
@@ -64,11 +65,12 @@ const RegistrationForm: React.FC = (props) => {
 
     axios
       .post(`http://localhost:8000/api/v1/users/register`, newUser)
-      .then((res) => {
-        console.log("successful post request to api");
+      .then(() => {
+        setShowSuccess(true);
       })
       .catch((err) => {
-        console.log(err);
+        errors.push(err);
+        setError(errors);
       });
     setFirstName("");
     setLastName("");
@@ -80,7 +82,7 @@ const RegistrationForm: React.FC = (props) => {
 
   return (
     <Card className={`${classes["card"]} `}>
-      {show && (
+      {showError && (
         <div>
           <AlertMessage
             alertMessageType="warning"
@@ -88,6 +90,11 @@ const RegistrationForm: React.FC = (props) => {
           >
             Errors: {error}
           </AlertMessage>
+        </div>
+      )}
+      {showSuccess && (
+        <div className={`${classes["success-alert"]}`}>
+          <Alert variant="success">Successfully registered!</Alert>
         </div>
       )}
       <div className={`${classes["form-heading"]}`}>
