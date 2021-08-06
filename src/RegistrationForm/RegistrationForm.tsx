@@ -39,23 +39,16 @@ const RegistrationForm: React.FC = (props) => {
   const registrationHandler = (event: React.SyntheticEvent) => {
     event.preventDefault();
     if (!firstName || !lastName || !email || !password || !passwordConfirm) {
-      setError((currentState) => {
-        return [...currentState, "Please fill out all fields! "];
-      });
+      errors.push("Please fill out all fields! ");
     }
     if (!isValidEmail(email)) {
-      setError((currentState) => {
-        return [...currentState, "Invalid email! "];
-      });
+      errors.push("Please enter a valid email! ");
     }
     if (password !== passwordConfirm) {
-      setError((currentState) => {
-        return [...currentState, "Password fields do not match! "];
-      });
+      errors.push("The passwords do not match!");
     }
 
-    console.log(error);
-    console.log(error.length);
+    setError(errors);
 
     if (error.length > 0) {
       setShow(true);
